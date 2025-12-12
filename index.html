@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spa para mascotas</title>
+    <link rel="stylesheet" href="css\style.css">
+</head>
+<body>
+    <header id="main-header" class="hidden">
+        <div class="brand"> Sadie's Pet Spa <span style="font-weight: normal; font-size: 0.9rem; margin-left: 10px;"></span></div>
+        <nav>
+            <button onclick="router('registro')" id="nav-registro">Registro</button>
+            <button onclick="router('agenda')" id="nav-agenda">Agenda</button>
+            <button onclick="router('tienda')" id="nav-tienda">Tienda</button>
+            <button class="cerrar" onclick="logout()">Cerrar Sesión</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section id="view-login" class="card" style="max-width: 800px; margin: 4rem auto;">
+            <div class="login-layout">
+                <div class="login-image-container">
+                    <img src="imagenes\logo.webp" alt="Perro veterinario">
+                </div>
+                <div class="login-form-container">
+                    <h2 style="text-align: center; border: none;">Bienvenido</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 2rem;">Inicia sesión para gestionar la clínica.</p>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label>Usuario (admin)</label>
+                            <input type="text" id="username" required placeholder="Ingresa tu usuario">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña (1234)</label>
+                            <input type="password" id="password" required placeholder="Ingresa tu contraseña">
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 1rem;">Entrar al Sistema</button>
+                        <p id="login-error" style="color: var(--accent); text-align: center; display: none; margin-top: 15px; font-weight: bold;">Credenciales incorrectas.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-registro" class="hidden">
+            <div class="card">
+                <img src="imagenes/dueno.jpg" class="banner-img" alt="Dueño y mascota">
+                <h2>Registro de Dueño</h2>
+                <form onsubmit="registrarDueno(event)">
+                    <div class="form-group"><label>Nombre Completo</label><input type="text" id="d-nombre" required></div>
+                    <div class="form-group"><label>Teléfono</label><input type="tel" id="d-tel" required></div>
+                    <div class="form-group"><label>Correo</label><input type="email" id="d-mail" required></div>
+                    <button type="submit" class="btn-primary">Guardar Dueño</button>
+                </form>
+            </div>
+            <div class="card">
+                <img src="imagenes/banner1.webp" class="banner-img" style="object-position: top;" alt="Cachorros">
+                <h2>Registro de Mascota</h2>
+                <form onsubmit="registrarMascota(event)">
+                    <div class="form-group"><label>Nombre</label><input type="text" id="m-nombre" required></div>
+                    <div class="form-group"><label>Especie</label><input type="text" id="m-especie" placeholder="Ej: Perro, Gato..." required></div>
+                    <div class="form-group"><label>Raza</label><input type="text" id="m-raza" required></div>
+                    <button type="submit" class="btn-primary">Guardar Mascota</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="view-agenda" class="hidden card">
+            <img src="imagenes/banner2.webp" class="banner-img" alt="Calendario">
+            <h2>Agendar Cita</h2>
+            <form onsubmit="agendarServicio(event)" style="margin-top: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group"><label>Fecha</label><input type="date" id="a-fecha" required></div>
+                    <div class="form-group"><label>Hora</label><input type="time" id="a-hora" required></div>
+                </div>
+                <div class="form-group">
+                    <label>Seleccionar Mascota</label>
+                    <select id="a-mascota" required><option value="">Cargando...</option></select>
+                </div>
+                <div class="form-group">
+                    <label>Servicio</label>
+                    <select id="a-servicio" required>
+                        <option value="Consulta General">Consulta General</option>
+                        <option value="Vacunación">Vacunación</option>
+                        <option value="Cirugía">Cirugía</option>
+                        <option value="Estética">Estética</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary" style="margin-top: 1rem;">Agendar Cita</button>
+            </form>
+            <div style="margin-top: 20px; padding: 15px; background: #d4edda; color: #155724; border-radius: 6px; display: none; text-align: center;" id="agenda-success">
+                ✅ ¡Cita agendada con éxito!
+            </div>
+        </section>
+
+        <section id="view-tienda" class="hidden">
+            <div class="card">
+                <h2>Catálogo de Productos</h2>
+                <div id="catalog-container" class="catalog-grid" style="margin-top: 2rem;">
+                    </div>
+            </div>
+
+            <div class="card">
+                <h2><span style="margin-right: 10px;"></span>Carrito de Compras</h2>
+                <div id="cart-items" style="margin-top: 1.5rem;">
+                    </div>
+                
+                <div class="totals">
+                    <p style="font-weight: 800; color: var(--secondary); font-size: 1.5rem;">Total: Bs<span id="cart-total">0.00</span></p>
+                    
+                    <button class="btn-success" onclick="finalizarCompra()">
+                        Pagar Ahora
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+<!--Lice tuve que poner el apartado de los produtos en esta parte por que las imagenes no agarra con el ../ en el app.js -->
+    <script>                
+    const productos = [
+        { id: 1, nombre: "Baño y Peluquería", precio: 35.00, imagen: "imagenes/perrobañado.jpg" },
+        { id: 2, nombre: "Croquetas Premium 3kg", precio: 28.50, imagen: "imagenes/croquetas.webp" },
+        { id: 3, nombre: "Juguete Mordedor", precio: 12.00, imagen: "imagenes/juguete.webp" },
+        { id: 4, nombre: "Pipeta Antipulgas x3", precio: 45.00, imagen: "imagenes/pipeta.webp" },
+        { id: 5, nombre: "Collar Ajustable", precio: 10.00, imagen: "imagenes/collar.webp" }
+        ];
+    </script>
+    <script src="js/app.js"></script>
+</body>
+</html>
